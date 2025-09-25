@@ -1,0 +1,678 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NumPy Mastery | PyData School</title>
+    <!-- Material Icons -->
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #10181d;
+            --bg-dark: #0b1116;
+            --card-bg: #18232b;
+            --accent: #00c6a7;
+            --accent-light: #00f2fe;
+            --primary: #ff9800;
+            --secondary: #00bcd4;
+            --info: #29b6f6;
+            --warning: #ffee58;
+            --danger: #ef5350;
+            --success: #43a047;
+            --text: #f3f7fa;
+            --text-muted: #b0bec5;
+            --border: #263238;
+        }
+        * { box-sizing: border-box; }
+        body {
+            background: var(--bg);
+            color: var(--text);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            min-height: 100vh;
+        }
+        a { color: var(--accent); text-decoration: none; }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+        header {
+            background: var(--bg-dark);
+            padding: 1.2rem 0;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.34);
+            position: sticky; top: 0; z-index: 10;
+        }
+        .header-content {
+            display: flex; justify-content: space-between; align-items: center; gap: 2rem;
+        }
+        .logo {
+            display: flex; align-items: center; gap: 12px; font-size: 2rem; font-weight: 700;
+        }
+        .logo .material-icons { color: var(--primary); font-size: 2.4rem; }
+        .instructor {
+            font-size: 1rem; color: var(--accent-light);
+        }
+        nav ul {
+            display: flex; gap: 1.5rem; list-style: none; margin: 0; padding: 0;
+        }
+        nav a {
+            color: var(--text); font-weight: 500; padding: 6px 14px; border-radius: 4px; transition: 0.25s;
+        }
+        nav a:hover { background: var(--accent); color: var(--bg-dark); }
+        .hero {
+            padding: 3.5rem 1rem 2rem 1rem;
+            background: linear-gradient(90deg, var(--primary) 0%, var(--accent) 100%);
+            color: #fff;
+            text-align: center;
+            border-radius: 0 0 16px 16px;
+            margin-bottom: 2.5rem;
+            box-shadow: 0 8px 28px rgba(0,0,0,0.15);
+        }
+        .hero h1 {
+            font-size: 3rem;
+            margin-bottom: 0.8rem;
+            display: flex; align-items: center; justify-content: center; gap: 10px;
+            background: linear-gradient(90deg, #fff 60%, #ffe082 100%);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+        }
+        .hero p { color: #f7f7f7; max-width: 680px; margin: 0 auto 1.5rem; font-size: 1.25rem; }
+        .btn {
+            background: linear-gradient(90deg, var(--accent), var(--primary));
+            color: var(--bg-dark);
+            padding: 12px 32px;
+            border: none;
+            border-radius: 100px;
+            font-weight: 700;
+            font-size: 1rem;
+            cursor: pointer;
+            box-shadow: 0 2px 8px rgba(0,198,167,0.19);
+            transition: transform 0.19s, box-shadow 0.19s;
+        }
+        .btn:hover { transform: translateY(-2px) scale(1.03); box-shadow: 0 8px 24px rgba(0,198,167,0.28);}
+        /* Instructor Card */
+        .instructor-section {
+            background: var(--card-bg);
+            padding: 2rem;
+            border-radius: 10px;
+            margin: 2rem 0;
+            display: flex;
+            gap: 2rem;
+            align-items: center;
+            box-shadow: 0 4px 18px rgba(0,0,0,0.13);
+        }
+        .instructor-img {
+            width: 90px; height: 90px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--accent), var(--primary));
+            display: flex; align-items: center; justify-content: center;
+            font-size: 2.1rem; color: white;
+        }
+        @media (max-width: 600px) {
+            .instructor-section { flex-direction: column; text-align: center; }
+        }
+        /* Section Titles */
+        .section-title {
+            text-align: center;
+            margin-bottom: 2.5rem;
+            font-size: 2rem;
+            font-weight: 600;
+            letter-spacing: 1px;
+            position: relative;
+        }
+        .section-title:after {
+            content: '';
+            display: block;
+            width: 70px; height: 4px;
+            background: var(--primary);
+            margin: 12px auto 0 auto;
+            border-radius: 2px;
+        }
+        /* Card Grid */
+        .card-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(330px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+        .feature-card {
+            background: var(--card-bg);
+            border-radius: 10px;
+            box-shadow: 0 2px 16px rgba(0,0,0,0.15);
+            padding: 1.7rem 1.3rem;
+            display: flex; flex-direction: column; align-items: flex-start;
+            border-left: 5px solid var(--accent);
+            transition: 0.22s;
+        }
+        .feature-card:hover { transform: scale(1.03); border-left: 7px solid var(--primary);}
+        .feature-card .material-icons { font-size: 2.6rem; margin-bottom: 0.7rem; color: var(--primary);}
+        .feature-card h3 { margin-bottom: 0.6rem; }
+        .feature-card ul { margin: 0 0 0.8rem 0; padding-left: 1.1rem;}
+        .feature-card li { color: var(--text-muted); margin-bottom: 0.23rem;}
+        /* Tabs */
+        .tabs { display: flex; background: var(--bg-dark); border-radius: 7px 7px 0 0; overflow: hidden;}
+        .tab {
+            flex: 1 0 20%;
+            padding: 1rem;
+            text-align: center;
+            cursor: pointer;
+            background: var(--card-bg);
+            color: var(--text-muted);
+            font-weight: 500;
+            border-bottom: 3px solid transparent;
+            transition: background 0.24s, border 0.22s;
+        }
+        .tab.active {
+            background: var(--bg-dark);
+            color: var(--primary);
+            border-bottom: 3px solid var(--primary);
+        }
+        .tab-content { display: none; padding: 1.5rem; background: var(--bg-dark); border-radius: 0 0 7px 7px; box-shadow: 0 5px 15px rgba(0,0,0,0.10);}
+        .tab-content.active { display: block; }
+        /* Example, Note, Playground */
+        .example, .notes {
+            margin: 1.1rem 0; border-radius: 6px;
+        }
+        .example {
+            background: rgba(0,188,212,0.08);
+            border-left: 5px solid var(--secondary);
+            padding: 1.2rem;
+        }
+        .example h4, .notes h4 { display: flex; align-items: center; gap: 9px; color: var(--secondary); margin-bottom: 0.5rem;}
+        .notes {
+            background: rgba(255,152,0,0.09);
+            border-left: 5px solid var(--primary);
+            padding: 1.1rem;
+        }
+        pre {
+            background: #232a31;
+            padding: 1rem;
+            border-radius: 4px;
+            overflow-x: auto;
+            margin: 0.7rem 0;
+            border: 1px solid var(--border);
+        }
+        code { color: #80cbc4; font-size: 1.07em;}
+        /* Playground */
+        .playground {
+            background: var(--card-bg);
+            border-radius: 10px;
+            box-shadow: 0 5px 18px rgba(0,0,0,0.17);
+            margin: 3rem 0;
+            border: 1px solid var(--border);
+        }
+        .playground-header {
+            background: var(--bg-dark);
+            color: white;
+            padding: 1rem 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .playground-body {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.1rem;
+            padding: 1.5rem;
+        }
+        @media (max-width: 800px) {
+            .playground-body { grid-template-columns: 1fr;}
+        }
+        .code-editor, .result-area {
+            border: 1px solid var(--border);
+            border-radius: 5px;
+            padding: 1rem;
+            background: var(--bg-dark);
+            min-height: 180px; width: 100%;
+            color: var(--text);
+        }
+        .code-editor { font-family: 'Fira Mono', 'Courier New', monospace; resize: vertical;}
+        /* Footer */
+        footer {
+            text-align: center;
+            padding: 2rem 0;
+            color: var(--text-muted);
+            border-top: 1px solid var(--border);
+            margin-top: 3rem;
+            font-size: 1rem;
+        }
+        /* Responsive */
+        @media (max-width: 700px) {
+            .header-content { flex-direction: column; gap: 1rem;}
+            .card-grid { grid-template-columns: 1fr;}
+            .tabs { flex-wrap: wrap;}
+            .tab { flex: 1 0 33%;}
+        }
+    </style>
+</head>
+<body>
+<header>
+    <div class="container header-content">
+        <div>
+            <div class="logo">
+                <span class="material-icons">science</span>
+                <span>PyData School</span>
+            </div>
+            <div class="instructor">Course by Ram Sir</div>
+        </div>
+        <nav>
+            <ul>
+                <li><a href="#">Home</a></li>
+                <li><a href="#">Libraries</a></li>
+                <li><a href="#">Practice</a></li>
+                <li><a href="#">Resources</a></li>
+                <li><a href="#">Contact</a></li>
+            </ul>
+        </nav>
+    </div>
+</header>
+<!-- Hero -->
+<section class="hero">
+    <div class="container">
+        <h1>
+            <span class="material-icons">calculate</span>
+            NumPy Mastery Course
+        </h1>
+        <p>
+            Dive deep into NumPy, Python's essential library for scientific computing, with theory, hands-on code, and expert tips from Ram Sir.
+        </p>
+        <a href="#course-content" class="btn">Start Learning NumPy</a>
+    </div>
+</section>
+
+<!-- Instructor Section -->
+<section class="container instructor-section">
+    <div class="instructor-img">
+        <span class="material-icons">person</span>
+    </div>
+    <div>
+        <h2>About Your Instructor</h2>
+        <p>
+            Ram Sir is a Python data science educator with 15+ years of experience in scientific computing and analytics. He has guided thousands in mastering Python, NumPy, and data-driven problem solving.
+        </p>
+    </div>
+</section>
+
+<!-- Course Content Overview -->
+<section class="container" id="course-content">
+    <h2 class="section-title">NumPy Core Concepts</h2>
+    <div class="card-grid">
+        <div class="feature-card">
+            <span class="material-icons">view_module</span>
+            <h3>Arrays & Creation</h3>
+            <ul>
+                <li>Understanding ndarrays</li>
+                <li>Array creation methods</li>
+                <li>Data types (dtype)</li>
+            </ul>
+            <button class="btn" onclick="showTab('arrays-tab')">Learn More</button>
+        </div>
+        <div class="feature-card">
+            <span class="material-icons">repeat</span>
+            <h3>Array Operations</h3>
+            <ul>
+                <li>Arithmetic & broadcasting</li>
+                <li>Shape manipulation</li>
+                <li>Aggregation functions</li>
+            </ul>
+            <button class="btn" onclick="showTab('operations-tab')">Learn More</button>
+        </div>
+        <div class="feature-card">
+            <span class="material-icons">filter_alt</span>
+            <h3>Indexing & Slicing</h3>
+            <ul>
+                <li>Basic & advanced indexing</li>
+                <li>Boolean filters</li>
+                <li>Fancy indexing</li>
+            </ul>
+            <button class="btn" onclick="showTab('indexing-tab')">Learn More</button>
+        </div>
+        <div class="feature-card">
+            <span class="material-icons">functions</span>
+            <h3>Mathematical Functions</h3>
+            <ul>
+                <li>Universal functions (ufuncs)</li>
+                <li>Statistical ops</li>
+                <li>Linear algebra</li>
+            </ul>
+            <button class="btn" onclick="showTab('math-tab')">Learn More</button>
+        </div>
+        <div class="feature-card">
+            <span class="material-icons">extension</span>
+            <h3>Advanced Topics</h3>
+            <ul>
+                <li>Random numbers</li>
+                <li>Broadcasting tricks</li>
+                <li>Masked arrays</li>
+            </ul>
+            <button class="btn" onclick="showTab('advanced-tab')">Learn More</button>
+        </div>
+    </div>
+</section>
+
+<!-- Tabs Section -->
+<section class="container tab-container">
+    <div class="tabs">
+        <div class="tab active" onclick="showTab('arrays-tab')">Arrays</div>
+        <div class="tab" onclick="showTab('operations-tab')">Operations</div>
+        <div class="tab" onclick="showTab('indexing-tab')">Indexing</div>
+        <div class="tab" onclick="showTab('math-tab')">Math</div>
+        <div class="tab" onclick="showTab('advanced-tab')">Advanced</div>
+    </div>
+    <!-- Arrays Tab -->
+    <div id="arrays-tab" class="tab-content active">
+        <h2><span class="material-icons">view_module</span> NumPy Arrays & Creation</h2>
+        <p>
+            NumPy's core is the <b>ndarray</b>, a fast, space-efficient multidimensional array. Arrays are created in many ways:
+        </p>
+        <div class="example">
+            <h4><span class="material-icons">code</span> Basic Array Creation</h4>
+            <pre><code>import numpy as np
+
+a = np.array([1, 2, 3])          # 1D array
+b = np.zeros((2, 3))             # 2x3 zero array
+c = np.ones(5)                   # 1D array of ones
+d = np.eye(3)                    # 3x3 identity matrix
+e = np.arange(0, 10, 2)          # Even numbers [0,2,4,6,8]
+f = np.linspace(0, 1, 5)         # 5 evenly spaced numbers from 0 to 1
+g = np.full((2,2), 7)            # 2x2 array filled with 7</code></pre>
+        </div>
+        <div class="example">
+            <h4><span class="material-icons">code</span> Array Attributes</h4>
+            <pre><code>a.shape         # Dimensions (tuple)
+a.dtype         # Data type
+a.size          # Number of elements
+a.ndim          # Number of dimensions
+a.itemsize      # Size of one item (bytes)</code></pre>
+        </div>
+        <div class="notes">
+            <h4><span class="material-icons">sticky_note_2</span> Key Notes</h4>
+            <p>
+                NumPy arrays are homogeneous and vastly faster than native Python lists for large data.
+            </p>
+        </div>
+    </div>
+    <!-- Operations Tab -->
+    <div id="operations-tab" class="tab-content">
+        <h2><span class="material-icons">repeat</span> Array Operations</h2>
+        <p>
+            NumPy supports vectorized operations, broadcasting, and aggregation:
+        </p>
+        <div class="example">
+            <h4><span class="material-icons">code</span> Arithmetic & Broadcasting</h4>
+            <pre><code>a = np.array([1, 2, 3])
+b = np.array([4, 5, 6])
+c = a + b           # [5, 7, 9]
+d = a * 2           # [2, 4, 6]
+e = a ** 2          # [1, 4, 9]
+f = a + 10          # [11, 12, 13]</code></pre>
+        </div>
+        <div class="example">
+            <h4><span class="material-icons">code</span> Aggregation Functions</h4>
+            <pre><code>arr = np.array([[1,2,3],[4,5,6]])
+arr.sum()           # 21
+arr.mean(axis=0)    # [2.5, 3.5, 4.5]
+arr.min()           # 1
+arr.max(axis=1)     # [3, 6]
+arr.std()           # Standard deviation</code></pre>
+        </div>
+        <div class="example">
+            <h4><span class="material-icons">code</span> Shape Manipulation</h4>
+            <pre><code>arr.reshape((3,2))      # Change shape
+arr.T                   # Transpose
+arr.flatten()           # 1D copy
+arr.ravel()             # 1D view (if possible)</code></pre>
+        </div>
+        <div class="notes">
+            <h4><span class="material-icons">sticky_note_2</span> Good to Know</h4>
+            <p>
+                Broadcasting allows arithmetic between differently-shaped arrays, e.g., adding a vector to every row of a matrix.
+            </p>
+        </div>
+    </div>
+    <!-- Indexing Tab -->
+    <div id="indexing-tab" class="tab-content">
+        <h2><span class="material-icons">filter_alt</span> Indexing & Slicing</h2>
+        <p>
+            Access and manipulate data efficiently:
+        </p>
+        <div class="example">
+            <h4><span class="material-icons">code</span> Basic Indexing/Slicing</h4>
+            <pre><code>a = np.array([10, 20, 30, 40, 50])
+a[1]         # 20
+a[1:4]       # [20, 30, 40]
+a[-1]        # 50
+
+mat = np.array([[1,2,3],[4,5,6]])
+mat[0,2]     # 3
+mat[:,1]     # [2,5]</code></pre>
+        </div>
+        <div class="example">
+            <h4><span class="material-icons">code</span> Boolean Indexing</h4>
+            <pre><code>a = np.array([10, 20, 30, 40, 50])
+mask = a > 25
+a[mask]      # [30, 40, 50]</code></pre>
+        </div>
+        <div class="example">
+            <h4><span class="material-icons">code</span> Fancy Indexing</h4>
+            <pre><code>a = np.array([10, 20, 30, 40])
+idx = [0, 2]
+a[idx]       # [10, 30]</code></pre>
+        </div>
+        <div class="notes">
+            <h4><span class="material-icons">sticky_note_2</span> Good to Know</h4>
+            <p>
+                Slicing returns views (not copies) when possible. Changing a slice may affect the original array!
+            </p>
+        </div>
+    </div>
+    <!-- Math Tab -->
+    <div id="math-tab" class="tab-content">
+        <h2><span class="material-icons">functions</span> Mathematical & Statistical Functions</h2>
+        <p>
+            NumPy provides many universal functions (<b>ufuncs</b>) and mathematical/statistical tools:
+        </p>
+        <div class="example">
+            <h4><span class="material-icons">code</span> Universal Functions (ufuncs)</h4>
+            <pre><code>a = np.array([0, np.pi/2, np.pi])
+np.sin(a)           # [0., 1., 0.]
+np.exp(a)           # [1., 4.81, 23.1...]
+np.log(a+1)         # [0., 1.18, 1.54]</code></pre>
+        </div>
+        <div class="example">
+            <h4><span class="material-icons">code</span> Statistical Functions</h4>
+            <pre><code>a = np.array([1, 2, 3, 4, 5])
+np.median(a)        # 3.0
+np.percentile(a, 80) # 4.2
+np.corrcoef(a, a)   # Correlation matrix</code></pre>
+        </div>
+        <div class="example">
+            <h4><span class="material-icons">code</span> Linear Algebra</h4>
+            <pre><code>mat = np.array([[1,2],[3,4]])
+np.linalg.inv(mat)          # Inverse
+np.dot(mat, mat)            # Matrix multiplication
+np.linalg.eig(mat)          # Eigenvalues/vectors</code></pre>
+        </div>
+        <div class="notes">
+            <h4><span class="material-icons">sticky_note_2</span> Key Notes</h4>
+            <p>
+                NumPy's rich set of mathematical/statistical functions make it ideal for scientific computing and analytics.
+            </p>
+        </div>
+    </div>
+    <!-- Advanced Tab -->
+    <div id="advanced-tab" class="tab-content">
+        <h2><span class="material-icons">extension</span> Advanced NumPy Features</h2>
+        <p>
+            Go further with NumPy's advanced features:
+        </p>
+        <div class="example">
+            <h4><span class="material-icons">code</span> Random Numbers</h4>
+            <pre><code>np.random.seed(42)
+np.random.rand(2,3)         # 2x3 array, uniform [0,1)
+np.random.randn(4)          # 4 samples, standard normal
+np.random.randint(0, 10, 5) # 5 random ints [0,10)</code></pre>
+        </div>
+        <div class="example">
+            <h4><span class="material-icons">code</span> Broadcasting Tricks</h4>
+            <pre><code>a = np.arange(3)          # [0,1,2]
+b = np.arange(3)[:,np.newaxis] # [[0],[1],[2]]
+a + b   # 3x3 grid: pairwise sums</code></pre>
+        </div>
+        <div class="example">
+            <h4><span class="material-icons">code</span> Masked Arrays</h4>
+            <pre><code>import numpy.ma as ma
+a = np.array([1, 2, -99, 4])
+masked = ma.masked_values(a, -99)
+masked.mean()      # Ignores -99</code></pre>
+        </div>
+        <div class="notes">
+            <h4><span class="material-icons">sticky_note_2</span> Good to Know</h4>
+            <p>
+                Explore <b>np.save</b>, <b>np.load</b> for saving arrays, and <b>np.vectorize</b> for custom vectorized operations.
+            </p>
+        </div>
+    </div>
+</section>
+
+<!-- Playground -->
+<section class="container">
+    <h2 class="section-title">NumPy Playground</h2>
+    <div class="playground">
+        <div class="playground-header">
+            <h3>Try Python NumPy Code</h3>
+            <button class="btn" onclick="runPy()">Run Code <span class='material-icons'>play_arrow</span></button>
+        </div>
+        <div class="playground-body">
+            <textarea class="code-editor" id="py-query" placeholder="Write NumPy code here...">import numpy as np
+a = np.arange(5)
+print("Array:", a)
+print("Squared:", a ** 2)
+</textarea>
+            <div class="result-area" id="py-result">
+                <p>Results will appear here...</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Function Reference -->
+<section class="container">
+    <h2 class="section-title">NumPy Function Reference</h2>
+    <p style="text-align:center; max-width:700px; margin:0 auto 2.2rem; color:var(--text-muted);">
+        Explore the most important NumPy functions with examples:
+    </p>
+    <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(340px,1fr)); gap:2rem;">
+        <div class="feature-card">
+            <span class="material-icons">add_box</span>
+            <h3>Array Creation</h3>
+            <ul>
+                <li><b>np.array()</b>: Make ndarray from list/tuple</li>
+                <li><b>np.zeros()</b>, <b>np.ones()</b>, <b>np.full()</b></li>
+                <li><b>np.arange()</b>, <b>np.linspace()</b></li>
+            </ul>
+<pre><code>a = np.zeros((3,2))
+b = np.linspace(0,1,5)
+</code></pre>
+        </div>
+        <div class="feature-card">
+            <span class="material-icons">edit_attributes</span>
+            <h3>Array Manipulation</h3>
+            <ul>
+                <li><b>reshape()</b>, <b>flatten()</b>, <b>transpose()</b></li>
+                <li><b>concatenate()</b>, <b>vstack()</b>, <b>hstack()</b></li>
+            </ul>
+<pre><code>x = np.arange(6).reshape(2,3)
+y = x.flatten()
+</code></pre>
+        </div>
+        <div class="feature-card">
+            <span class="material-icons">filter_list</span>
+            <h3>Selection & Filtering</h3>
+            <ul>
+                <li><b>where()</b>, <b>nonzero()</b>, <b>argmax()</b>, <b>argmin()</b></li>
+                <li>Boolean/fancy indexing</li>
+            </ul>
+<pre><code>a = np.array([1,2,3,4])
+idx = np.where(a%2==0)
+</code></pre>
+        </div>
+        <div class="feature-card">
+            <span class="material-icons">calculate</span>
+            <h3>Math & Stats</h3>
+            <ul>
+                <li><b>sum()</b>, <b>mean()</b>, <b>median()</b></li>
+                <li><b>std()</b>, <b>var()</b>, <b>corrcoef()</b></li>
+            </ul>
+<pre><code>x = np.random.randn(5)
+m = np.mean(x)
+</code></pre>
+        </div>
+        <div class="feature-card">
+            <span class="material-icons">functions</span>
+            <h3>Linear Algebra</h3>
+            <ul>
+                <li><b>dot()</b>: Matrix multiplication</li>
+                <li><b>linalg.inv()</b>, <b>linalg.eig()</b></li>
+            </ul>
+<pre><code>A = np.eye(2)
+B = np.linalg.inv(A)
+</code></pre>
+        </div>
+        <div class="feature-card">
+            <span class="material-icons">casino</span>
+            <h3>Random Numbers</h3>
+            <ul>
+                <li><b>np.random.rand()</b>, <b>randn()</b></li>
+                <li><b>np.random.randint()</b></li>
+                <li><b>np.random.seed()</b></li>
+            </ul>
+<pre><code>np.random.seed(0)
+data = np.random.randint(0,10,4)
+</code></pre>
+        </div>
+    </div>
+</section>
+
+<footer>
+    <div class="container">
+        <p>&copy; 2025 PyData School. All rights reserved.</p>
+        <p>NumPy Mastery Course by Ram Sir</p>
+    </div>
+</footer>
+<script>
+    // Tab switching
+    function showTab(tabId) {
+        // Hide all tab contents
+        document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
+        document.getElementById(tabId).classList.add('active');
+        // Update active tab
+        document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
+        // Find index of tabId
+        let tabNames = ['arrays-tab','operations-tab','indexing-tab','math-tab','advanced-tab'];
+        let idx = tabNames.indexOf(tabId);
+        if (idx >= 0) document.querySelectorAll('.tab')[idx].classList.add('active');
+    }
+    // Playground simulation (does not execute real Python!)
+    function runPy() {
+        const code = document.getElementById('py-query').value.trim();
+        const resultArea = document.getElementById('py-result');
+        // Simple fake output for demo
+        if (code.includes("np.arange(")) {
+            resultArea.innerHTML = "<pre>Array: [0 1 2 3 4]\nSquared: [ 0  1  4  9 16]</pre>";
+        } else if (code.includes("np.zeros(")) {
+            resultArea.innerHTML = "<pre>[[0. 0. 0.]\n [0. 0. 0.]]</pre>";
+        } else if (code.includes("np.mean(")) {
+            resultArea.innerHTML = "<pre>Mean: 3.45</pre>";
+        } else if (code.includes("np.random.rand(")) {
+            resultArea.innerHTML = "<pre>[[0.37 0.95 0.73]\n [0.60 0.16 0.87]]</pre>";
+        } else if (code.includes("print(")) {
+            resultArea.innerHTML = "<pre>Output simulated. (Try 'np.arange(5)', 'np.mean(x)', etc.)</pre>";
+        } else {
+            resultArea.innerHTML = "<pre>No output (simulator only).</pre>";
+        }
+    }
+    document.addEventListener('DOMContentLoaded', function() { runPy(); });
+</script>
+</body>
+</html>
